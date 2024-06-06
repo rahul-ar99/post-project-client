@@ -2,13 +2,15 @@
 import { NextPage } from "next"
 import { useState, FormEvent } from "react"
 import axios from 'axios'
+import { redirect } from 'next/navigation';
+
 
 
 const LoginPage:NextPage = ()=>{
-    const [userName, setUserName]:any = useState<string>('rahul3')
-    const [jobRole, setJobRole] = useState<string>('user')
-    const [email, setEmail] = useState<string>('rahul@gmail.com')
-    const [password, setPassword] = useState<string>('1234')
+    const [userName, setUserName]:any = useState<string>('')
+    const [jobRole, setJobRole] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
 
     const handleSubmit = async (event:FormEvent) =>{
         event.preventDefault()
@@ -17,7 +19,7 @@ const LoginPage:NextPage = ()=>{
         formData.append("username",userName)
         formData.append("email",email)
         formData.append("password",password)
-        formData.append("job_role",jobRole)
+        formData.append("role",jobRole)
 
         try{
             const response = await axios.post('http://localhost:8000/api/v1/auth/create/', formData, {
@@ -25,7 +27,12 @@ const LoginPage:NextPage = ()=>{
                     'Content-Type':'multipart/form-data'
                 },
             });
-            console.log(response.data)
+            setUserName('')
+            setJobRole('default')
+            setEmail('')
+            setPassword('')
+            // console.log(response.data)
+            redirect('/login')
         }catch(error){
             console.log(error)
         }
@@ -42,28 +49,40 @@ const LoginPage:NextPage = ()=>{
                             username
                         </label>
 
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Enter Username" />
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Enter Username" 
+                        value={userName}
+                        onChange={(e)=>setUserName(e.target.value)}
+                        />
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="email">
                             email
                         </label>
 
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Enter Email" />
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Enter Email" 
+                        value={email}
+                         onChange={(e)=>setEmail(e.target.value)}/>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="password">
                             password
                         </label>
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Enter Password" />
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Enter Password" 
+                        value={password}
+                         onChange={(e)=>setPassword(e.target.value)}/>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="username">
                             job-role
                         </label>
-                        <select name="" id="job-role" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
+                        <select name="" id="job-role" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={jobRole}
+                        onChange={(e)=>setJobRole(e.target.value)}
+
+                        >
+                            <option value="default" disabled selected>Choose job role</option>
+                            <option value="ADMIN">Admin</option>
+                            <option value="CUSTOMER">Customer</option>
                         </select>
                         {/* <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Enter Username" /> */}
                     </div>
@@ -80,7 +99,7 @@ const LoginPage:NextPage = ()=>{
                     </div>
                     <div className="mb-6">
                         <button className="w-full bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                            Login
+                            Signup
                         </button>
                     </div>
                     <div className="text-center">

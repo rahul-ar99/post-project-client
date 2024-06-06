@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 
 
+
 const LoginPage:NextPage = ()=>{
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -19,21 +20,27 @@ const LoginPage:NextPage = ()=>{
                 password: password
             });
             console.log(response)
-
             if (response.status === 200) {
-                // Login successful
                 const token = response.data.access;
-                // Save the token in a cookie
+                try{
+                    const res = await axios.post('http://127.0.0.1:8000/api/v1/auth/profile/', {
+                        username: username
+                    });
+                    Cookies.set("user_detials",JSON.stringify(res.data.data))
+                    Cookies.set("username",`${res.data.data.username}`)
+                    Cookies.set("jobRole",`${res.data.data.role}`)
+                    // Cookies.set("user_detials",`${res.data['role']}`)
+                    // Cookies.set("user_detials",`${res.data['username']}`)
+                }catch(error){
+                    console.log("user details error")
+                }
                 Cookies.set('auth_token', token, { secure: true, sameSite: 'Strict' });
                 console.log(token)
-                // Redirect to another page or update the state as needed
-                window.location.href = '/mainpage'; // Redirect to dashboard or any other page
+                window.location.href = '/mainpage';
             } else {
-                // Handle unexpected status codes
                 setError('Login failed. Please try again.');
             }
         } catch (error) {
-            // Handle errors (e.g., network errors, server errors)
             setError('Login error. Please check your credentials and try again.');
         }
     };
