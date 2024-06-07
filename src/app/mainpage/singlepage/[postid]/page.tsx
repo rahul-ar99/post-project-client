@@ -5,7 +5,8 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import Cookies from "js-cookie";
 import axios from "axios";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 
 const Page = ({params})=>{
@@ -81,7 +82,8 @@ const Page = ({params})=>{
                                 setLike(!like)
                                 likeFunction()
                                 }}>
-                                <Image src={require('../../../../../public/images/heart.png')} alt="heart icon" className="cursor-pointer invert-0"  />
+                                <FontAwesomeIcon icon={faHeart}  className={`${like?'text-red-600':''} text-4xl`}/>
+                                {/* <Image src={require('../../../../../public/images/heart.png')} alt="heart icon" className="cursor-pointer invert-0"  /> */}
                             </div>
                             <p className="text-4xl">{likeCount}</p>
                         </div>

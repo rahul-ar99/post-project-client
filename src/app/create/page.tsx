@@ -4,7 +4,8 @@ import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2'
 
 
 
@@ -13,6 +14,8 @@ const EditCategoryForm:React.FC = () => {
     const [description, setDescription] = useState<String>('');
     const [title, setTitle] = useState<String>('');
     const [message, setMessage] = useState<String>('');
+
+    const router = useRouter()
 
 
     // import image as state
@@ -50,9 +53,22 @@ const EditCategoryForm:React.FC = () => {
                     'Authorization': `Bearer ${authToken}`
                 },
             });
-            redirect('/mainpage')
-            if (response.status === 201) {
-                setMessage('Image successfully uploaded');
+            console.log(response.status)
+            // redirect('/mainpage')
+            if (response.status == 200) {
+                console.log("upload sucessfull")
+                Swal.fire({
+                    title: 'Your post has been submitted',
+                    text: 'Your post is now visible to others',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(()=>{
+                    router.push('/mainpage')
+                },2000)
+
+                // setMessage('Image successfully uploaded');
             } else {
                 setMessage('Failed to upload image');
             }
@@ -78,6 +94,7 @@ const EditCategoryForm:React.FC = () => {
                         <div>
                             <h3 className="text-4xl font-bold my-2">Create Post</h3>
                         </div>
+                        <p>{message}</p>
                         <div className="flex gap-3">
                             <Link  href={'/mainpage'}>
                                 <button className="w-[140px] py-3 rounded-full font-semibold text-xl bg-white text-[#4587ef]">Cancel</button>

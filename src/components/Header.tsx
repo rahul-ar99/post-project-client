@@ -11,6 +11,9 @@ const Header =()=>{
 
     function logout() {
         Cookies.remove('auth_token');
+        Cookies.remove('jobRole')
+        Cookies.remove('username')
+        Cookies.remove('user_detials')
         console.log('logout function')
         window.location.href = '/mainpage';
     }
@@ -39,6 +42,7 @@ const Header =()=>{
                         <div>
                             <button className="capitalize px-8 py-3 rounded-full font-semibold text-xl text-white bg-[#4587ef]" onClick={logout}>Log out</button>
                         </div>
+                        
                     </div>
                 </div>
             </div>

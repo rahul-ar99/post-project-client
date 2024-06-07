@@ -14,6 +14,7 @@ const LoginPage:NextPage = ()=>{
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
+        setError("")
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/token/', {
                 username: username,
@@ -51,7 +52,7 @@ const LoginPage:NextPage = ()=>{
             <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
                 <h2 className="text-2xl font-bold mb-4 text-center">Sign in</h2>
                 <p className="mb-6 text-center text-gray-600">Sign in with your username and password</p>
-                <p>{error}</p>
+                <p className="text-red-700">{error}</p>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">

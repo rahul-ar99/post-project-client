@@ -2,16 +2,20 @@
 import { NextPage } from "next"
 import { useState, FormEvent } from "react"
 import axios from 'axios'
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import Swal from "sweetalert2";
 
 
 
 const LoginPage:NextPage = ()=>{
     const [userName, setUserName]:any = useState<string>('')
-    const [jobRole, setJobRole] = useState<string>('')
+    const [jobRole, setJobRole] = useState<string>('default')
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+    const [errorMessage, setErrorMessage] = useState<string>('')
 
+    const router = useRouter()
+    
     const handleSubmit = async (event:FormEvent) =>{
         event.preventDefault()
 
@@ -31,8 +35,26 @@ const LoginPage:NextPage = ()=>{
             setJobRole('default')
             setEmail('')
             setPassword('')
-            // console.log(response.data)
-            redirect('/login')
+            if(response.data.status_code == 6001){
+                setErrorMessage(response.data.message)
+                setTimeout(()=>{
+                    setErrorMessage('')
+                },3000)
+            }
+            else if(response.data.status_code==6000){
+                Swal.fire({
+                    title: 'User successfully created',
+                    // text: 'Now you can explore posts',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    router.push('/login')
+                }, 1500);
+            }
+            console.log(response.data)
+            // redirect('/login')
         }catch(error){
             console.log(error)
         }
@@ -43,6 +65,7 @@ const LoginPage:NextPage = ()=>{
             <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
                 <h2 className="text-2xl font-bold mb-4 text-center">Sign in</h2>
                 <p className="mb-6 text-center text-gray-600">Sign in with your username and password</p>
+                <p className="text-red-500">{errorMessage}</p>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="username">
@@ -52,6 +75,7 @@ const LoginPage:NextPage = ()=>{
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Enter Username" 
                         value={userName}
                         onChange={(e)=>setUserName(e.target.value)}
+                        required
                         />
                     </div>
                     <div className="mb-4">
@@ -61,7 +85,9 @@ const LoginPage:NextPage = ()=>{
 
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Enter Email" 
                         value={email}
-                         onChange={(e)=>setEmail(e.target.value)}/>
+                         onChange={(e)=>setEmail(e.target.value)}
+                         required
+                         />
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="password">
@@ -69,7 +95,8 @@ const LoginPage:NextPage = ()=>{
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Enter Password" 
                         value={password}
-                         onChange={(e)=>setPassword(e.target.value)}/>
+                         onChange={(e)=>setPassword(e.target.value)}
+                         required/>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2 capitalize" htmlFor="username">
@@ -78,7 +105,7 @@ const LoginPage:NextPage = ()=>{
                         <select name="" id="job-role" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         value={jobRole}
                         onChange={(e)=>setJobRole(e.target.value)}
-
+                        required
                         >
                             <option value="default" disabled selected>Choose job role</option>
                             <option value="ADMIN">Admin</option>
