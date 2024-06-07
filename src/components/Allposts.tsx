@@ -1,4 +1,11 @@
 import SinglePost from "./SinglePost"
+import { Metadata } from "next"
+
+
+export const metadata: Metadata = {
+    title: "Signup",
+    description: "Post APP",
+};
 
 const Allpost = ()=>{
     return(
